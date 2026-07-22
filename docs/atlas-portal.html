@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ATLAS — Member Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@400;500;600;700;800&family=Saira:wght@400;500;600&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#10150f;
+    --panel:#161c16;
+    --panel-2:#1c241d;
+    --panel-3:#222c23;
+    --bone:#efe9db;
+    --bone-dim:#b6afa0;
+    --bone-faint:#847e70;
+    --brass:#b1925a;
+    --brass-bright:#d2ad6a;
+    --moss:#5a7a5f;
+    --green-ok:#7fa07a;
+    --line:rgba(239,233,219,.11);
+    --line-2:rgba(239,233,219,.2);
+    --disp:"Saira Condensed",sans-serif;
+    --ui:"Saira",sans-serif;
+    --body:"Spectral",serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--ink);color:var(--bone);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.55}
+  ::selection{background:var(--brass);color:var(--ink)}
+  a{color:inherit;text-decoration:none}
+  .disp{font-family:var(--disp);text-transform:uppercase;font-weight:700;letter-spacing:-.01em;line-height:1}
+  .eyebrow{font-family:var(--ui);font-weight:600;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass)}
+  .label{font-family:var(--ui);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-faint)}
+  .btn{font-family:var(--ui);font-weight:600;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 22px;border:1px solid var(--brass);
+    background:var(--brass);color:var(--ink);cursor:pointer;transition:.2s}
+  .btn:hover{background:var(--brass-bright);border-color:var(--brass-bright)}
+  .btn.ghost{background:transparent;color:var(--bone);border-color:var(--line-2)}
+  .btn.ghost:hover{border-color:var(--brass);color:var(--brass)}
+  .btn.sm{padding:9px 16px;font-size:11px}
+  .btn svg{width:14px;height:14px}
+  .pill{font-family:var(--ui);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    padding:4px 10px;border:1px solid var(--brass);color:var(--brass);border-radius:2px;display:inline-block}
+  .pill.solid{background:var(--brass);color:var(--ink);border-color:var(--brass)}
+  .pill.dim{border-color:var(--line-2);color:var(--bone-faint)}
+  .pill.ok{border-color:var(--green-ok);color:var(--green-ok)}
+
+  /* ---------- app shell ---------- */
+  .app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+  .sidebar{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+  .side-brand{padding:26px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .side-brand .word{font-family:var(--disp);font-weight:700;font-size:22px;letter-spacing:.32em;padding-left:.32em;color:var(--bone)}
+  .side-nav{padding:16px 12px;flex:1;display:flex;flex-direction:column;gap:2px}
+  .nav-item{display:flex;align-items:center;gap:13px;padding:12px 14px;font-family:var(--ui);font-size:13px;letter-spacing:.06em;
+    color:var(--bone-dim);cursor:pointer;border-left:2px solid transparent;transition:.15s;text-transform:uppercase;font-weight:500}
+  .nav-item svg{width:18px;height:18px;flex-shrink:0;stroke-width:1.6}
+  .nav-item:hover{color:var(--bone);background:rgba(239,233,219,.03)}
+  .nav-item.active{color:var(--brass);border-left-color:var(--brass);background:rgba(177,146,90,.07)}
+  .side-member{padding:16px;border-top:1px solid var(--line);display:flex;align-items:center;gap:12px}
+  .avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--brass),var(--moss));display:flex;align-items:center;justify-content:center;
+    font-family:var(--disp);font-weight:700;color:var(--ink);font-size:16px;flex-shrink:0}
+  .side-member .mn{font-family:var(--ui);font-size:13px;font-weight:600;color:var(--bone)}
+  .side-member .mt{font-family:var(--ui);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass)}
+
+  /* ---------- main ---------- */
+  .main{display:flex;flex-direction:column;min-width:0}
+  .topbar{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;
+    padding:0 34px;position:sticky;top:0;background:rgba(16,21,15,.9);backdrop-filter:blur(8px);z-index:20}
+  .topbar h1{font-family:var(--disp);font-size:24px;text-transform:uppercase;color:var(--bone);font-weight:700}
+  .topbar-right{display:flex;align-items:center;gap:16px}
+  .icon-btn{width:38px;height:38px;border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--bone-dim);position:relative}
+  .icon-btn:hover{border-color:var(--brass);color:var(--brass)}
+  .icon-btn svg{width:17px;height:17px}
+  .icon-btn .dot{position:absolute;top:8px;right:9px;width:6px;height:6px;border-radius:50%;background:var(--brass)}
+  .burger{display:none}
+
+  .view{padding:34px;display:none;max-width:1200px}
+  .view.show{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  /* cards */
+  .card{background:var(--panel);border:1px solid var(--line);padding:24px}
+  .card.hl{border-color:var(--line-2)}
+  .card-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .card-h .t{font-family:var(--disp);font-size:16px;text-transform:uppercase;color:var(--bone);letter-spacing:.02em;font-weight:600}
+
+  /* ---------- dashboard ---------- */
+  .greet{margin-bottom:28px}
+  .greet .hi{font-family:var(--disp);font-size:34px;text-transform:uppercase;color:var(--bone);font-weight:700}
+  .greet .hi em{color:var(--brass);font-style:normal}
+  .greet .sub{color:var(--bone-dim);font-size:15px;margin-top:6px}
+  .dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px}
+  .dash-col{display:flex;flex-direction:column;gap:20px}
+
+  .feature{position:relative;overflow:hidden;border:1px solid var(--line-2);min-height:230px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px}
+  .feature .bg{position:absolute;inset:0;background:linear-gradient(120deg,#1a2418,#0d120c);z-index:0}
+  .feature .topo{position:absolute;inset:0;opacity:.5;z-index:1}
+  .feature .fc{position:relative;z-index:2}
+  .feature .stamp{position:absolute;top:22px;left:28px;z-index:2}
+  .feature .cd{position:absolute;top:22px;right:28px;z-index:2;text-align:right}
+  .feature .cd .big{font-family:var(--disp);font-size:30px;color:var(--brass);font-weight:700;line-height:1}
+  .feature h2{font-family:var(--disp);font-size:38px;text-transform:uppercase;color:var(--bone);font-weight:800;margin-bottom:8px;line-height:.95}
+  .feature .meta{color:var(--bone-dim);font-size:14px;margin-bottom:18px}
+  .feature .frow{display:flex;gap:12px;align-items:center}
+
+  .stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .stat-card{background:var(--panel);border:1px solid var(--line);padding:22px}
+  .stat-card .n{font-family:var(--disp);font-size:40px;color:var(--brass);font-weight:700;line-height:1}
+  .stat-card .l{margin-top:8px}
+  .stat-card .s{color:var(--bone-faint);font-size:12px;margin-top:4px}
+
+  /* kit mini */
+  .kit-mini .steps{display:flex;align-items:center;margin:8px 0 14px}
+  .kit-mini .step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+  .kit-mini .dot{width:12px;height:12px;border-radius:50%;background:var(--panel-3);border:2px solid var(--line-2);z-index:2}
+  .kit-mini .step.done .dot{background:var(--brass);border-color:var(--brass)}
+  .kit-mini .step.active .dot{background:var(--brass);border-color:var(--brass-bright);box-shadow:0 0 0 4px rgba(177,146,90,.2)}
+  .kit-mini .bar{position:absolute;top:5px;left:-50%;width:100%;height:2px;background:var(--line-2);z-index:1}
+  .kit-mini .step.done .bar,.kit-mini .step.active .bar{background:var(--brass)}
+  .kit-mini .step:first-child .bar{display:none}
+  .kit-mini .sl{font-family:var(--ui);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--bone-faint);margin-top:8px;text-align:center}
+  .kit-mini .step.active .sl,.kit-mini .step.done .sl{color:var(--bone-dim)}
+
+  /* challenge */
+  .prog{height:8px;background:var(--panel-3);border:1px solid var(--line);margin:14px 0 8px;overflow:hidden}
+  .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--moss),var(--brass))}
+
+  /* core mini compass */
+  .core-quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+  .core-cell{border:1px solid var(--line);padding:12px 14px}
+  .core-cell .cd{display:flex;align-items:center;gap:8px}
+  .core-cell .b{width:20px;height:20px;border-radius:50%;background:var(--brass);color:var(--ink);font-family:var(--disp);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center}
+  .core-cell .cn{font-family:var(--ui);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--bone-dim);font-weight:600}
+  .core-cell .cbar{height:5px;background:var(--panel-3);margin-top:10px;overflow:hidden}
+  .core-cell .cbar i{display:block;height:100%;background:var(--brass)}
+
+  /* ---------- events ---------- */
+  .filters{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+  .chip{font-family:var(--ui);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-dim);
+    padding:8px 16px;border:1px solid var(--line);cursor:pointer;transition:.15s}
+  .chip:hover{border-color:var(--line-2);color:var(--bone)}
+  .chip.on{background:var(--brass);color:var(--ink);border-color:var(--brass);font-weight:600}
+  .ev-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .ecard{border:1px solid var(--line);background:var(--panel);overflow:hidden;display:flex;flex-direction:column;transition:.25s}
+  .ecard:hover{border-color:var(--line-2);transform:translateY(-3px)}
+  .ecard .img{height:150px;position:relative;overflow:hidden}
+  .ecard .img .g{position:absolute;inset:0}
+  .ecard .img .topo{position:absolute;inset:0;opacity:.55}
+  .ecard .img .badges{position:absolute;top:14px;left:14px;display:flex;gap:8px;z-index:2}
+  .ecard .img .date{position:absolute;bottom:14px;right:16px;z-index:2;text-align:right}
+  .ecard .img .date .d{font-family:var(--disp);font-size:24px;color:var(--bone);font-weight:700;line-height:.9}
+  .ecard .img .date .m{font-family:var(--ui);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+  .ecard .eb{padding:20px 22px;flex:1;display:flex;flex-direction:column}
+  .ecard .loc{font-family:var(--ui);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone-faint);margin-bottom:6px}
+  .ecard h3{font-family:var(--disp);font-size:24px;text-transform:uppercase;color:var(--bone);font-weight:700;margin-bottom:8px;line-height:1}
+  .ecard .desc{color:var(--bone-dim);font-size:13.5px;flex:1;margin-bottom:16px}
+  .ecard .foot{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--line)}
+  .ecard .price .now{font-family:var(--disp);font-size:22px;color:var(--bone);font-weight:700}
+  .ecard .price .was{font-family:var(--body);font-size:13px;color:var(--bone-faint);text-decoration:line-through;margin-left:6px}
+  .ecard .price .free{font-family:var(--disp);font-size:18px;color:var(--green-ok);font-weight:700;text-transform:uppercase}
+  .ecard .price .sv{font-family:var(--ui);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);display:block;margin-top:2px}
+
+  /* ---------- kit page ---------- */
+  .kit-hero{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;margin-bottom:24px}
+  .track{background:var(--panel);border:1px solid var(--line-2);padding:28px}
+  .track .steps{display:flex;margin:24px 0 10px}
+  .track .step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+  .track .dot{width:34px;height:34px;border-radius:50%;background:var(--panel-3);border:2px solid var(--line-2);display:flex;align-items:center;justify-content:center;z-index:2}
+  .track .dot svg{width:15px;height:15px;color:var(--bone-faint)}
+  .track .step.done .dot{background:var(--brass);border-color:var(--brass)}
+  .track .step.done .dot svg{color:var(--ink)}
+  .track .step.active .dot{background:var(--brass);border-color:var(--brass-bright);box-shadow:0 0 0 5px rgba(177,146,90,.18)}
+  .track .step.active .dot svg{color:var(--ink)}
+  .track .bar{position:absolute;top:16px;left:-50%;width:100%;height:2px;background:var(--line-2);z-index:1}
+  .track .step.done .bar,.track .step.active .bar{background:var(--brass)}
+  .track .step:first-child .bar{display:none}
+  .track .sl{font-family:var(--ui);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--bone-faint);margin-top:10px;text-align:center}
+  .track .step.done .sl,.track .step.active .sl{color:var(--bone-dim)}
+  .track-info{margin-top:20px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+  .track-info .ti .k{margin-bottom:4px}
+  .track-info .ti .v{font-family:var(--ui);font-size:14px;color:var(--bone)}
+  .contents{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+  .citem{background:var(--panel);padding:20px}
+  .citem .ct{display:flex;align-items:center;justify-content:space-between}
+  .citem .cn{font-family:var(--disp);font-size:18px;text-transform:uppercase;color:var(--bone);font-weight:600}
+  .citem .cd{color:var(--bone-faint);font-size:12.5px;margin-top:4px}
+  .check{width:18px;height:18px;border-radius:50%;background:var(--brass);display:flex;align-items:center;justify-content:center}
+  .check svg{width:11px;height:11px;color:var(--ink)}
+
+  /* ---------- library ---------- */
+  .lib-grid{display:flex;flex-direction:column;gap:14px}
+  .lrow{display:grid;grid-template-columns:auto 1fr auto auto;gap:20px;align-items:center;background:var(--panel);border:1px solid var(--line);padding:18px 22px;transition:.15s}
+  .lrow:hover{border-color:var(--line-2)}
+  .lrow .licon{width:46px;height:46px;border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;color:var(--brass)}
+  .lrow .licon svg{width:20px;height:20px}
+  .lrow .ln{font-family:var(--disp);font-size:19px;text-transform:uppercase;color:var(--bone);font-weight:600}
+  .lrow .lcat{margin-top:3px}
+  .lrow .rating{font-family:var(--ui);font-size:13px;color:var(--brass);letter-spacing:.05em}
+  .lrow .rating .rn{color:var(--bone-dim);font-size:11px}
+
+  /* ---------- membership ---------- */
+  .mem-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:24px}
+  .plan{background:linear-gradient(160deg,#1c241b,#11160f);border:1px solid var(--brass);padding:32px}
+  .plan .pt{font-family:var(--disp);font-size:32px;text-transform:uppercase;color:var(--bone);font-weight:700}
+  .plan .pr{display:flex;align-items:baseline;gap:8px;margin:14px 0 20px}
+  .plan .pr .a{font-family:var(--disp);font-size:44px;color:var(--brass);font-weight:700}
+  .plan .pr .p{font-family:var(--ui);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-faint)}
+  .plan ul{list-style:none;margin:20px 0}
+  .plan li{display:flex;gap:11px;padding:9px 0;color:var(--bone-dim);font-size:14px;border-bottom:1px solid var(--line)}
+  .plan li:last-child{border:0}
+  .plan li svg{width:15px;height:15px;color:var(--brass);flex-shrink:0;margin-top:4px}
+  .bill{background:var(--panel);border:1px solid var(--line);padding:26px}
+  .bill-row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)}
+  .bill-row:last-child{border:0}
+  .bill-row .v{font-family:var(--ui);color:var(--bone);font-size:14px}
+  .upsell{margin-top:24px;background:var(--panel);border:1px dashed var(--brass);padding:28px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .upsell .ut{font-family:var(--disp);font-size:26px;text-transform:uppercase;color:var(--bone);font-weight:700}
+  .upsell .ud{color:var(--bone-dim);font-size:14px;margin-top:6px;max-width:520px}
+
+  /* ---------- modal ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(8,11,7,.8);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+  .overlay.show{display:flex;animation:fade .25s}
+  .modal{background:var(--panel);border:1px solid var(--line-2);max-width:520px;width:100%;max-height:90vh;overflow-y:auto}
+  .modal-h{padding:24px 28px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start}
+  .modal-h .mt{font-family:var(--disp);font-size:24px;text-transform:uppercase;color:var(--bone);font-weight:700}
+  .modal-h .ms{color:var(--bone-faint);font-size:13px;margin-top:4px}
+  .modal-x{background:none;border:0;color:var(--bone-faint);cursor:pointer;font-size:22px;line-height:1}
+  .modal-x:hover{color:var(--bone)}
+  .modal-b{padding:26px 28px}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-family:var(--ui);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-dim);margin-bottom:8px}
+  .field input,.field select,.field textarea{width:100%;background:var(--ink);border:1px solid var(--line-2);color:var(--bone);padding:12px 14px;font-family:var(--body);font-size:15px}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:0;border-color:var(--brass)}
+  .stepper{display:flex;align-items:center;gap:14px}
+  .stepper button{width:38px;height:38px;border:1px solid var(--line-2);background:var(--ink);color:var(--bone);font-size:18px;cursor:pointer}
+  .stepper button:hover{border-color:var(--brass);color:var(--brass)}
+  .stepper .qty{font-family:var(--disp);font-size:24px;color:var(--bone);min-width:30px;text-align:center}
+  .addon{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+  .addon input{width:18px;height:18px;accent-color:var(--brass)}
+  .addon .an{font-family:var(--ui);font-size:14px;color:var(--bone)}
+  .addon .ap{margin-left:auto;font-family:var(--ui);font-size:13px;color:var(--brass)}
+  .summary{background:var(--ink);border:1px solid var(--line);padding:18px;margin-top:8px}
+  .summary .sr{display:flex;justify-content:space-between;padding:6px 0;font-family:var(--ui);font-size:13px;color:var(--bone-dim)}
+  .summary .sr.disc{color:var(--green-ok)}
+  .summary .sr.total{border-top:1px solid var(--line);margin-top:8px;padding-top:14px;font-size:18px;color:var(--bone);font-family:var(--disp);text-transform:uppercase}
+  .modal-f{padding:20px 28px;border-top:1px solid var(--line);display:flex;gap:12px}
+  .modal-f .btn{flex:1}
+
+  .success{text-align:center;padding:20px 10px}
+  .success .ring{width:66px;height:66px;border-radius:50%;border:2px solid var(--brass);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .success .ring svg{width:30px;height:30px;color:var(--brass)}
+  .success h3{font-family:var(--disp);font-size:26px;text-transform:uppercase;color:var(--bone);font-weight:700;margin-bottom:10px}
+  .success p{color:var(--bone-dim);font-size:14px;max-width:340px;margin:0 auto}
+
+  /* toast */
+  .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--panel-2);border:1px solid var(--brass);
+    padding:14px 24px;font-family:var(--ui);font-size:13px;color:var(--bone);z-index:300;transition:.4s;display:flex;align-items:center;gap:10px}
+  .toast svg{width:16px;height:16px;color:var(--brass)}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  .devnote{margin-top:14px;font-family:var(--ui);font-size:11px;letter-spacing:.04em;color:var(--bone-faint);border-left:2px solid var(--line-2);padding-left:12px}
+
+  /* responsive */
+  @media(max-width:900px){
+    .app{grid-template-columns:1fr}
+    .sidebar{position:fixed;left:-260px;top:0;width:248px;z-index:120;transition:.3s;height:100vh}
+    .sidebar.open{left:0}
+    .burger{display:flex;width:38px;height:38px;border:1px solid var(--line-2);align-items:center;justify-content:center;cursor:pointer;color:var(--bone)}
+    .burger svg{width:18px;height:18px}
+    .dash-grid,.kit-hero,.mem-grid{grid-template-columns:1fr}
+    .ev-grid,.contents,.core-quick{grid-template-columns:1fr}
+    .stat3{grid-template-columns:1fr}
+    .view{padding:22px}
+    .lrow{grid-template-columns:auto 1fr;gap:14px}
+    .lrow .rating,.lrow .btn{grid-column:2}
+  }
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:110;display:none}
+  .scrim.show{display:block}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="side-brand"><span class="word">ATLAS</span></div>
+    <nav class="side-nav">
+      <div class="nav-item active" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-view="events">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2l3 6 6 .5-4.5 4 1.5 6-6-3.5L6 18.5 7.5 12.5 3 8.5 9 8z"/></svg>
+        Expeditions
+      </div>
+      <div class="nav-item" data-view="kit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        My Kit
+      </div>
+      <div class="nav-item" data-view="library">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h12a2 2 0 012 2v14H6a2 2 0 01-2-2z"/><path d="M8 4v14"/></svg>
+        Resource Library
+      </div>
+      <div class="nav-item" data-view="core">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 5l2 7-2 7-2-7z" fill="currentColor" stroke="none"/></svg>
+        CORE Check-In
+      </div>
+      <div class="nav-item" data-view="membership">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        Membership
+      </div>
+    </nav>
+    <div class="side-member">
+      <div class="avatar">JE</div>
+      <div>
+        <div class="mn">Dr. Jordan Ellis</div>
+        <div class="mt">Navigator</div>
+      </div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div class="burger" id="burger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+        <h1 id="pageTitle">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="icon-btn"><span class="dot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></div>
+        <span class="pill">Navigator</span>
+      </div>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="view show" id="view-dashboard">
+      <div class="greet">
+        <div class="hi">Welcome back, <em>Jordan.</em></div>
+        <div class="sub">You're 3 weeks out from your first expedition. Here's where you stand across the map.</div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="dash-col">
+          <!-- featured next event -->
+          <div class="feature">
+            <div class="bg"></div>
+            <svg class="topo" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <g fill="none" stroke="#b1925a" stroke-width="1" opacity=".3">
+                <path d="M-20,240 C120,210 240,260 380,225 C500,196 580,235 620,215"/>
+                <path d="M-20,195 C130,168 260,215 400,180 C520,152 590,190 620,172"/>
+                <path d="M-20,150 C140,126 270,170 410,138 C530,112 590,146 620,130"/>
+                <path d="M-20,108 C150,86 280,128 420,98 C540,74 590,104 620,90"/>
+              </g>
+            </svg>
+            <span class="pill solid stamp">Your Next Expedition</span>
+            <div class="cd"><div class="big">24</div><div class="label">Oct · 2026</div></div>
+            <div class="fc">
+              <h2>Take Aim On<br/>Your Life</h2>
+              <div class="meta">Wilmington, NC · Fall Pilot Event · 2 nights</div>
+              <div class="frow">
+                <span class="pill ok">Booked</span>
+                <a class="btn sm ghost" data-view="events">View Details</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- stats -->
+          <div class="stat3">
+            <div class="stat-card"><div class="n">1</div><div class="l label">Expedition Booked</div><div class="s">2 more open to you</div></div>
+            <div class="stat-card"><div class="n">$200</div><div class="l label">Member Savings</div><div class="s">This year to date</div></div>
+            <div class="stat-card"><div class="n">8</div><div class="l label">Day Challenge Streak</div><div class="s">Keep it alive</div></div>
+          </div>
+
+          <!-- monthly challenge -->
+          <div class="card">
+            <div class="card-h"><span class="t">This Month's Challenge</span><span class="pill dim">Nov</span></div>
+            <div style="font-family:var(--disp);font-size:26px;text-transform:uppercase;color:var(--bone);font-weight:700">Cold Exposure · 20 Days</div>
+            <div style="color:var(--bone-dim);font-size:14px;margin-top:8px">Two minutes of cold, every day. Log it to enter this month's gear giveaway.</div>
+            <div class="prog"><i style="width:40%"></i></div>
+            <div style="display:flex;justify-content:space-between"><span class="label">8 of 20 days</span><span class="label" style="color:var(--brass)">Prize: Blackfoot Kit</span></div>
+          </div>
+        </div>
+
+        <div class="dash-col">
+          <!-- kit status mini -->
+          <div class="card kit-mini">
+            <div class="card-h"><span class="t">Kit Status</span><a class="pill" data-view="kit" style="cursor:pointer">Track</a></div>
+            <div class="steps">
+              <div class="step done"><div class="bar"></div><div class="dot"></div><div class="sl">Ordered</div></div>
+              <div class="step done"><div class="bar"></div><div class="dot"></div><div class="sl">Packed</div></div>
+              <div class="step active"><div class="bar"></div><div class="dot"></div><div class="sl">Shipped</div></div>
+              <div class="step"><div class="bar"></div><div class="dot"></div><div class="sl">Delivered</div></div>
+            </div>
+            <div style="color:var(--bone-dim);font-size:13px">Your Atlas Kit is on the way — arriving <b style="color:var(--bone)">Nov 8</b>.</div>
+          </div>
+
+          <!-- CORE quick -->
+          <div class="card">
+            <div class="card-h"><span class="t">Your Compass</span><a class="pill" data-view="core" style="cursor:pointer">Check-In</a></div>
+            <div class="core-quick">
+              <div class="core-cell"><div class="cd"><span class="b">N</span><span class="cn">Profession</span></div><div class="cbar"><i style="width:78%"></i></div></div>
+              <div class="core-cell"><div class="cd"><span class="b">E</span><span class="cn">Health</span></div><div class="cbar"><i style="width:45%"></i></div></div>
+              <div class="core-cell"><div class="cd"><span class="b">S</span><span class="cn">Relationships</span></div><div class="cbar"><i style="width:60%"></i></div></div>
+              <div class="core-cell"><div class="cd"><span class="b">W</span><span class="cn">Adventure</span></div><div class="cbar"><i style="width:35%"></i></div></div>
+            </div>
+            <div class="devnote">Last check-in: 12 days ago. Adventure is trending low.</div>
+          </div>
+
+          <!-- resource highlight -->
+          <div class="card">
+            <div class="card-h"><span class="t">From the Library</span></div>
+            <div style="font-family:var(--disp);font-size:20px;text-transform:uppercase;color:var(--bone);font-weight:600">Blackfoot Outfitters</div>
+            <div class="label" style="margin:6px 0">Gear & Apparel · ★ 4.8</div>
+            <div style="color:var(--bone-dim);font-size:13px">Member-verified review + <b style="color:var(--brass)">15% ATLAS discount</b>.</div>
+            <a class="btn sm ghost" data-view="library" style="margin-top:14px">Open Library</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== EVENTS ===== -->
+    <div class="view" id="view-events">
+      <div class="filters">
+        <div class="chip on">All Expeditions</div>
+        <div class="chip">Open to Navigators</div>
+        <div class="chip">Expedition Only</div>
+        <div class="chip">Family Friendly</div>
+      </div>
+      <div class="ev-grid" id="evGrid"></div>
+    </div>
+
+    <!-- ===== KIT ===== -->
+    <div class="view" id="view-kit">
+      <div class="kit-hero">
+        <div class="track">
+          <div class="card-h"><span class="t">Atlas Kit — Tracking</span><span class="pill ok">In Transit</span></div>
+          <div class="steps">
+            <div class="step done"><div class="bar"></div><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sl">Ordered</div></div>
+            <div class="step done"><div class="bar"></div><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div><div class="sl">Packed</div></div>
+            <div class="step active"><div class="bar"></div><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/></svg></div><div class="sl">Shipped</div></div>
+            <div class="step"><div class="bar"></div><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/></svg></div><div class="sl">Delivered</div></div>
+          </div>
+          <div class="track-info">
+            <div class="ti"><div class="k label">Carrier</div><div class="v">UPS Ground</div></div>
+            <div class="ti"><div class="k label">Tracking</div><div class="v" style="color:var(--brass)">1Z999AA10123456784</div></div>
+            <div class="ti"><div class="k label">Est. Delivery</div><div class="v">Nov 8, 2026</div></div>
+          </div>
+        </div>
+        <div class="card hl" style="display:flex;flex-direction:column;justify-content:center">
+          <span class="eyebrow">The Welcome Box</span>
+          <div style="font-family:var(--disp);font-size:30px;text-transform:uppercase;color:var(--bone);font-weight:700;margin:10px 0 12px;line-height:.95">Everything you<br/>need to begin.</div>
+          <div style="color:var(--bone-dim);font-size:14px">Your Navigator kit is built to be worth the membership on day one. Here's what's inside.</div>
+        </div>
+      </div>
+      <div class="contents">
+        <div class="citem"><div class="ct"><span class="cn">The Comfort Crisis</span><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span></div><div class="cd">The book behind the whole philosophy.</div></div>
+        <div class="citem"><div class="ct"><span class="cn">The Atlas Journal</span><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span></div><div class="cd">Your annual CORE planning guide.</div></div>
+        <div class="citem"><div class="ct"><span class="cn">Signature Gear</span><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span></div><div class="cd">Field-ready branded items worth keeping.</div></div>
+        <div class="citem"><div class="ct"><span class="cn">A Handwritten Note</span><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span></div><div class="cd">Plus a QR to your welcome video.</div></div>
+      </div>
+    </div>
+
+    <!-- ===== LIBRARY ===== -->
+    <div class="view" id="view-library">
+      <div class="filters">
+        <div class="chip on">All</div>
+        <div class="chip">Gear</div>
+        <div class="chip">Health & Fitness</div>
+        <div class="chip">Finance</div>
+        <div class="chip">Travel</div>
+      </div>
+      <div class="lib-grid" id="libGrid"></div>
+    </div>
+
+    <!-- ===== CORE ===== -->
+    <div class="view" id="view-core">
+      <div style="max-width:640px;margin-bottom:28px">
+        <span class="eyebrow">The Atlas Compass</span>
+        <div style="font-family:var(--disp);font-size:32px;text-transform:uppercase;color:var(--bone);font-weight:700;margin:10px 0 8px">Where are you headed?</div>
+        <div style="color:var(--bone-dim);font-size:15px">Rate each direction honestly. This is your private compass — it shapes the events and resources we surface for you.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" id="coreGrid"></div>
+      <div style="margin-top:24px"><button class="btn" onclick="toast('Check-in saved to your compass')">Save Check-In <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+    </div>
+
+    <!-- ===== MEMBERSHIP ===== -->
+    <div class="view" id="view-membership">
+      <div class="mem-grid">
+        <div class="plan">
+          <span class="pill solid">Current Plan</span>
+          <div class="pt" style="margin-top:14px">Atlas Navigators</div>
+          <div class="pr"><span class="a">$100</span><span class="p">/ month</span></div>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>The Atlas Kit — book, journal, gear & welcome</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Member discounts & 2-week early booking on events</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Resource library & unbiased vendor discounts</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Monthly challenges & member giveaways</li>
+          </ul>
+          <button class="btn ghost" onclick="toast('Manage billing opens Stripe portal')">Manage Billing</button>
+        </div>
+        <div class="bill">
+          <div class="card-h"><span class="t">Billing</span></div>
+          <div class="bill-row"><span class="label">Status</span><span class="v"><span class="pill ok">Active</span></span></div>
+          <div class="bill-row"><span class="label">Member Since</span><span class="v">Sept 2026</span></div>
+          <div class="bill-row"><span class="label">Next Charge</span><span class="v">Dec 1 · $100.00</span></div>
+          <div class="bill-row"><span class="label">Payment</span><span class="v">Visa ···· 4242</span></div>
+          <div class="bill-row"><span class="label">Saved This Year</span><span class="v" style="color:var(--brass)">$200.00</span></div>
+        </div>
+      </div>
+
+      <div class="upsell">
+        <div>
+          <div class="ut">Ready for the Expedition?</div>
+          <div class="ud">Join a smaller, vetted group of professionals. Main events free, private expeditions unlocked — peak climbs, dives, and advanced challenges. By application, annual commitment.</div>
+        </div>
+        <button class="btn" id="applyBtn">Request an Invitation <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ BOOKING MODAL ============ -->
+<div class="overlay" id="bookModal">
+  <div class="modal">
+    <div id="bookForm">
+      <div class="modal-h">
+        <div><div class="mt" id="bkTitle">Book Expedition</div><div class="ms" id="bkSub">Wilmington, NC · Oct 24</div></div>
+        <button class="modal-x" onclick="closeModal('bookModal')">✕</button>
+      </div>
+      <div class="modal-b">
+        <div class="field">
+          <label>Attendees</label>
+          <div class="stepper">
+            <button onclick="qty(-1)">−</button>
+            <span class="qty" id="qty">1</span>
+            <button onclick="qty(1)">+</button>
+            <span class="label" style="margin-left:10px" id="qtyNote">Member rate applies to all</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Add-ons</label>
+          <label class="addon"><input type="checkbox" data-addon="120" onchange="calc()"><span class="an">Private lodging upgrade</span><span class="ap">+$120</span></label>
+          <label class="addon"><input type="checkbox" data-addon="0" onchange="calc()"><span class="an">Bring a spouse / guest (family event)</span><span class="ap">+$0 today</span></label>
+          <label class="addon"><input type="checkbox" data-addon="65" onchange="calc()"><span class="an">Guided range session add-on</span><span class="ap">+$65</span></label>
+        </div>
+        <div class="summary" id="summary"></div>
+        <div class="devnote">Member pricing, early-access window, and Expedition comping are enforced server-side — see handoff notes.</div>
+      </div>
+      <div class="modal-f">
+        <button class="btn ghost" onclick="closeModal('bookModal')">Cancel</button>
+        <button class="btn" onclick="confirmBooking()">Confirm & Pay</button>
+      </div>
+    </div>
+    <div id="bookDone" style="display:none">
+      <div class="modal-b success">
+        <div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h3>You're In.</h3>
+        <p>Your spot is reserved. A confirmation and packing list are on their way to your inbox.</p>
+      </div>
+      <div class="modal-f"><button class="btn" style="flex:1" onclick="closeModal('bookModal')">Back to Expeditions</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APPLICATION MODAL ============ -->
+<div class="overlay" id="applyModal">
+  <div class="modal">
+    <div class="modal-h">
+      <div><div class="mt">Expedition Application</div><div class="ms">A smaller group. A bigger commitment.</div></div>
+      <button class="modal-x" onclick="closeModal('applyModal')">✕</button>
+    </div>
+    <div class="modal-b">
+      <div class="field"><label>Why the Expedition tier?</label><textarea rows="3" placeholder="What are you looking for beyond dentistry right now?"></textarea></div>
+      <div class="field"><label>Experience level</label>
+        <select><option>New to hardcore outdoor challenges</option><option>Some experience — ready to push</option><option>Seasoned — bring it on</option></select>
+      </div>
+      <div class="field"><label>Which draws you most?</label>
+        <select><option>Peak climbing / summits</option><option>Scuba & dive expeditions</option><option>Desert & endurance crossings</option><option>All of it</option></select>
+      </div>
+      <div class="devnote">Submissions route to the Atlas team for review before any annual charge. No card captured at this step.</div>
+    </div>
+    <div class="modal-f">
+      <button class="btn ghost" onclick="closeModal('applyModal')">Not Yet</button>
+      <button class="btn" onclick="closeModal('applyModal');toast('Application submitted — the team will be in touch')">Submit Application</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><span id="toastMsg"></span></div>
+
+<script>
+/* ---------------- data (mock) ---------------- */
+const EVENTS=[
+  {id:1,title:"Take Aim On Your Life",loc:"Wilmington, NC",d:"24",m:"Oct",grad:"linear-gradient(135deg,#2a2418,#12140d)",
+   desc:"Flagship weekend at a $10M range — rifle, handgun, AR & archery, plus speakers and a self-audit workshop.",
+   member:450,regular:650,tier:"navigator",family:true,badges:["Early Access","Family"]},
+  {id:2,title:"Reach The Peak",loc:"Jackson Hole, WY",d:"14",m:"Sep",grad:"linear-gradient(135deg,#1c2a2e,#0d1214)",
+   desc:"A guided western summit hike for those chasing the peak of life. Built for the committed.",
+   member:1200,regular:1450,tier:"navigator",family:false,badges:["Expedition Track"]},
+  {id:3,title:"Beyond The Map — Blue Depths",loc:"Cozumel, MX",d:"09",m:"Nov",grad:"linear-gradient(135deg,#132630,#0a1013)",
+   desc:"A scuba descent expedition into open water. Small group, high adventure, real depth.",
+   member:null,regular:1600,tier:"expedition",family:false,badges:["Expedition Only"]},
+  {id:4,title:"Winter Summit Basecamp",loc:"Aspen, CO",d:"18",m:"Jan",grad:"linear-gradient(135deg,#232a2c,#101416)",
+   desc:"Cold-weather challenge weekend — ice, altitude, and the discomfort that grows you.",
+   member:520,regular:720,tier:"navigator",family:false,badges:["Early Access"]},
+];
+const LIB=[
+  {n:"Blackfoot Outfitters",cat:"Gear & Apparel",rate:"4.8",disc:"15% off",icon:"box"},
+  {n:"Peak Performance Health",cat:"Health & Fitness",rate:"4.9",disc:"1 month free",icon:"heart"},
+  {n:"Meridian Wealth",cat:"Finance & Planning",rate:"4.6",disc:"Free consult",icon:"chart"},
+  {n:"Compass Travel Co.",cat:"Travel & Expeditions",rate:"4.7",disc:"10% off trips",icon:"globe"},
+  {n:"Northgate Insurance",cat:"Practice & Business",rate:"4.5",disc:"Member rates",icon:"shield"},
+];
+const CORE=[
+  {b:"N",n:"Profession",q:"Career, ownership, mastery",v:78},
+  {b:"E",n:"Health",q:"Fitness, mental, sleep, energy",v:45},
+  {b:"S",n:"Relationships",q:"Partner, family, friends, presence",v:60},
+  {b:"W",n:"Growth & Adventure",q:"Learning, travel, new challenges",v:35},
+];
+const LIB_ICONS={
+  box:'<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/>',
+  heart:'<path d="M20.8 5.6a5 5 0 00-7 0L12 7.3l-1.8-1.7a5 5 0 10-7 7L12 21l8.8-8.4a5 5 0 000-7z"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/>',
+  shield:'<path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/>'
+};
+const MEMBER_TIER="navigator"; // current logged-in member tier
+
+/* ---------------- render ---------------- */
+function evCard(e){
+  let priceHTML;
+  if(e.tier==="expedition"){
+    priceHTML = MEMBER_TIER==="expedition"
+      ? `<span class="free">Included</span><span class="sv">Expedition benefit</span>`
+      : `<span class="pill dim">Expedition Only</span>`;
+  } else {
+    const save = e.regular - e.member;
+    priceHTML = `<span class="now">$${e.member}</span><span class="was">$${e.regular}</span><span class="sv">You save $${save} as a member</span>`;
+  }
+  const cta = (e.tier==="expedition" && MEMBER_TIER!=="expedition")
+    ? `<button class="btn sm ghost" data-view="membership">Upgrade to Attend</button>`
+    : `<button class="btn sm" onclick="openBook(${e.id})">Book Now</button>`;
+  const badges = e.badges.map(b=>`<span class="pill ${b==='Expedition Only'?'dim':''}">${b}</span>`).join("");
+  return `<div class="ecard">
+    <div class="img"><div class="g" style="background:${e.grad}"></div>
+      <svg class="topo" viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#b1925a" stroke-width="1" opacity=".35"><path d="M-10,120 C80,100 160,130 250,108 C330,90 380,115 410,102"/><path d="M-10,92 C90,72 170,102 260,80 C340,62 380,88 410,74"/><path d="M-10,64 C100,46 180,74 270,54 C350,38 380,60 410,48"/></g></svg>
+      <div class="badges">${badges}</div>
+      <div class="date"><div class="d">${e.d}</div><div class="m">${e.m}</div></div>
+    </div>
+    <div class="eb">
+      <div class="loc">${e.loc}</div>
+      <h3>${e.title}</h3>
+      <div class="desc">${e.desc}</div>
+      <div class="foot"><div class="price">${priceHTML}</div>${cta}</div>
+    </div></div>`;
+}
+document.getElementById("evGrid").innerHTML = EVENTS.map(evCard).join("");
+
+document.getElementById("libGrid").innerHTML = LIB.map(l=>`
+  <div class="lrow">
+    <div class="licon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${LIB_ICONS[l.icon]}</svg></div>
+    <div><div class="ln">${l.n}</div><div class="lcat label">${l.cat}</div></div>
+    <div style="text-align:right"><div class="rating">★ ${l.rate} <span class="rn">/ member-rated</span></div><span class="pill" style="margin-top:6px">${l.disc}</span></div>
+    <button class="btn sm ghost" onclick="toast('Opening ${l.n.replace(/'/g,'')} — member discount applied')">View</button>
+  </div>`).join("");
+
+document.getElementById("coreGrid").innerHTML = CORE.map(c=>`
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <span class="b" style="width:26px;height:26px;border-radius:50%;background:var(--brass);color:var(--ink);font-family:var(--disp);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center">${c.b}</span>
+      <div><div style="font-family:var(--disp);font-size:19px;text-transform:uppercase;color:var(--bone);font-weight:600">${c.n}</div><div class="label">${c.q}</div></div>
+    </div>
+    <div class="cbar" style="height:6px;background:var(--panel-3);margin:14px 0 10px"><i style="display:block;height:100%;background:var(--brass);width:${c.v}%"></i></div>
+    <input type="range" min="0" max="100" value="${c.v}" style="width:100%;accent-color:var(--brass)" oninput="this.previousElementSibling.firstElementChild.style.width=this.value+'%'">
+  </div>`).join("");
+
+/* ---------------- nav ---------------- */
+const titles={dashboard:"Dashboard",events:"Expeditions",kit:"My Kit",library:"Resource Library",core:"CORE Check-In",membership:"Membership"};
+function go(view){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("show"));
+  document.getElementById("view-"+view).classList.add("show");
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.toggle("active",n.dataset.view===view));
+  document.getElementById("pageTitle").textContent=titles[view];
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("scrim").classList.remove("show");
+  window.scrollTo(0,0);
+}
+document.body.addEventListener("click",e=>{
+  const t=e.target.closest("[data-view]");
+  if(t){e.preventDefault();go(t.dataset.view);}
+});
+
+/* mobile sidebar */
+const sb=document.getElementById("sidebar"),scrim=document.getElementById("scrim");
+document.getElementById("burger").onclick=()=>{sb.classList.add("open");scrim.classList.add("show")};
+scrim.onclick=()=>{sb.classList.remove("open");scrim.classList.remove("show")};
+
+/* ---------------- booking ---------------- */
+let curEvent=null,count=1;
+function openBook(id){
+  curEvent=EVENTS.find(e=>e.id===id);count=1;
+  document.getElementById("bkTitle").textContent=curEvent.title;
+  document.getElementById("bkSub").textContent=`${curEvent.loc} · ${curEvent.m} ${curEvent.d}`;
+  document.getElementById("qty").textContent=count;
+  document.getElementById("bookForm").style.display="block";
+  document.getElementById("bookDone").style.display="none";
+  document.querySelectorAll('#bookModal [data-addon]').forEach(c=>c.checked=false);
+  calc();
+  openModal("bookModal");
+}
+function qty(d){count=Math.max(1,count+d);document.getElementById("qty").textContent=count;calc();}
+function calc(){
+  if(!curEvent)return;
+  const unit=curEvent.member ?? curEvent.regular;
+  const base=unit*count;
+  const regBase=curEvent.regular*count;
+  const memberSave=regBase-base;
+  let addons=0;
+  document.querySelectorAll('#bookModal [data-addon]:checked').forEach(c=>addons+=+c.dataset.addon);
+  const total=base+addons;
+  document.getElementById("summary").innerHTML=`
+    <div class="sr"><span>Expedition × ${count}</span><span>$${base.toLocaleString()}</span></div>
+    ${memberSave>0?`<div class="sr disc"><span>Navigator member savings</span><span>−$${memberSave.toLocaleString()}</span></div>`:''}
+    ${addons?`<div class="sr"><span>Add-ons</span><span>$${addons.toLocaleString()}</span></div>`:''}
+    <div class="sr total"><span>Total</span><span>$${total.toLocaleString()}</span></div>`;
+}
+function confirmBooking(){
+  document.getElementById("bookForm").style.display="none";
+  document.getElementById("bookDone").style.display="block";
+}
+
+/* ---------------- modals + toast ---------------- */
+function openModal(id){document.getElementById(id).classList.add("show")}
+function closeModal(id){document.getElementById(id).classList.remove("show")}
+document.getElementById("applyBtn").onclick=()=>openModal("applyModal");
+document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("show")}));
+let toastTimer;
+function toast(msg){
+  document.getElementById("toastMsg").textContent=msg;
+  const t=document.getElementById("toast");t.classList.add("show");
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),2600);
+}
+</script>
+</body>
+</html>
