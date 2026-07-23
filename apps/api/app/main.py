@@ -23,7 +23,13 @@ async def lifespan(_: FastAPI):
 
 def create_app() -> FastAPI:
     settings = get_settings()
-    app = FastAPI(title="ATLAS Member API", version="0.1.0", lifespan=lifespan)
+    # root_path=/api so Swagger/OpenAPI work behind nginx location /api/
+    app = FastAPI(
+        title="ATLAS Member API",
+        version="0.1.0",
+        lifespan=lifespan,
+        root_path="/api",
+    )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origin_list,
@@ -42,7 +48,8 @@ def create_app() -> FastAPI:
 
     @app.get("/")
     async def root() -> RedirectResponse:
-        return RedirectResponse(url="/docs")
+        # Relative so nginx /api/ → /api/docs and direct :8000/ → /docs both work
+        return RedirectResponse(url="docs")
 
     @app.get("/health")
     async def health() -> dict:
