@@ -1,6 +1,9 @@
 # Deploy ATLAS to DigitalOcean when main is updated.
 #
-# Required GitHub repo secrets (Settings → Secrets and variables → Actions):
+# Secrets live on a GitHub Environment (not only repo secrets):
+#   Settings → Environments → <name> → Environment secrets
+#
+# Required secrets on that environment:
 #   DROPLET_HOST     — e.g. 167.172.135.40
 #   DROPLET_USER     — e.g. deploy
 #   DROPLET_SSH_KEY  — private key for that user (full PEM)
@@ -8,6 +11,9 @@
 #
 # Optional:
 #   DROPLET_PORT     — SSH port (default 22)
+#
+# IMPORTANT: job `environment:` below must match your Environment name exactly.
+# Default below is `production`. Change it if you named the env differently.
 #
 # One-time server + secrets setup: see deploy/SETUP_CICD.md
 
@@ -27,8 +33,33 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    # Must match Settings → Environments → name (where you stored the secrets)
+    environment: production
 
     steps:
+      - name: Verify deploy secrets
+        env:
+          DROPLET_HOST: ${{ secrets.DROPLET_HOST }}
+          DROPLET_USER: ${{ secrets.DROPLET_USER }}
+          DROPLET_SSH_KEY: ${{ secrets.DROPLET_SSH_KEY }}
+          DROPLET_PATH: ${{ secrets.DROPLET_PATH }}
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in DROPLET_HOST DROPLET_USER DROPLET_SSH_KEY DROPLET_PATH; do
+            # Indirect expand without printing values
+            eval "val=\${$name}"
+            if [ -z "$val" ]; then
+              echo "ERROR: secret $name is empty."
+              echo "       Put it on the GitHub Environment named in jobs.deploy.environment"
+              echo "       (Settings → Environments), or change environment: in deploy.yml to match."
+              missing=1
+            else
+              echo "OK: $name is set (${#val} chars)"
+            fi
+          done
+          exit "$missing"
+
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
         with:

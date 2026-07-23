@@ -26,7 +26,8 @@ ATLAS/
 └── .env.example
 ```
 
-## Quick start
+Quick start
+---
 
 ### 1. Environment
 
@@ -39,6 +40,16 @@ cp .env.example .env
 
 Apply `apps/api/db/schema.sql` once (Supabase SQL Editor or local `psql`).  
 See `apps/api/db/README.md`.
+
+### 2b. Sample data (catalog + per-member)
+
+```bash
+# Supabase: run apps/api/db/seed.sql then seed_member.sql in SQL Editor
+# or locally:
+cd apps/api && python scripts/seed_db.py
+```
+
+Safe to re-run. Seeds shared expeditions/library **and** kit, bookings, CORE, and applications for every member (plus `demo@youratlashq.com`).
 
 ### 3. Database (local Postgres, optional)
 

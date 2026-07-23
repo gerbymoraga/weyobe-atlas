@@ -166,9 +166,16 @@ Confirm:
 
 ---
 
-## Step 6 — Add GitHub Actions secrets
+## Step 6 — Add GitHub Environment secrets
 
-Repo → **Settings → Secrets and variables → Actions → New repository secret**:
+Environment secrets are **not** visible to the workflow unless the job sets
+`environment: <same-name>`. The workflow uses `environment: production`.
+
+1. Repo → **Settings → Environments → New environment**
+2. Name it exactly: `production`  
+   (If you already created a different name, either rename it to `production`
+   or edit `.github/workflows/deploy.yml` so `environment:` matches your name.)
+3. Under that environment → **Add environment secret**:
 
 | Secret | Example value |
 |---|---|
@@ -178,9 +185,11 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 | `DROPLET_PATH` | `/home/deploy/apps/weyobe-atlas` |
 | `DROPLET_PORT` | `22` (optional; omit if default) |
 
-Do **not** put the private key in the repo. Delete the local `atlas-deploy` key files
-from your laptop after storing the secret if you do not need them elsewhere
-(keep a backup in a password manager).
+Do **not** put the private key in the repo. Repository-level secrets also work if
+you prefer — but then remove `environment:` from the job, or keep both in sync.
+
+Delete the local `atlas-deploy` key files from your laptop after storing the secret
+if you do not need them elsewhere (keep a backup in a password manager).
 
 ---
 
