@@ -25,6 +25,24 @@ PUBLIC_WEB_ROOT="${PUBLIC_WEB_ROOT:-/var/www/atlas}"
 MODE="${1:-all}"
 
 restart_api() {
+  if command -v pm2 >/dev/null 2>&1; then
+    echo "==> Restarting API via PM2"
+    if pm2 describe atlas-api >/dev/null 2>&1; then
+      pm2 restart atlas-api --update-env
+    else
+      pm2 start "$ROOT/deploy/ecosystem.config.cjs"
+    fi
+    sleep 1
+    if curl -sf "http://${API_HOST}:${API_PORT}/health" >/dev/null; then
+      echo "    API health OK (pm2)"
+    else
+      echo "    WARNING: API did not respond — pm2 logs atlas-api"
+      pm2 logs atlas-api --lines 40 --nostream || true
+      exit 1
+    fi
+    return
+  fi
+
   echo "==> Stopping API on :$API_PORT (if running)"
   if command -v fuser >/dev/null 2>&1; then
     fuser -k "${API_PORT}/tcp" 2>/dev/null || true
