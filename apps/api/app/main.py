@@ -23,14 +23,7 @@ async def lifespan(_: FastAPI):
 
 def create_app() -> FastAPI:
     settings = get_settings()
-    app = FastAPI(
-        title="ATLAS Member API",
-        version="0.1.0",
-        lifespan=lifespan,
-        docs_url="/api",
-        redoc_url="/api/redoc",
-        openapi_url="/api/openapi.json",
-    )
+    app = FastAPI(title="ATLAS Member API", version="0.1.0", lifespan=lifespan)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origin_list,
@@ -49,7 +42,7 @@ def create_app() -> FastAPI:
 
     @app.get("/")
     async def root() -> RedirectResponse:
-        return RedirectResponse(url="/api")
+        return RedirectResponse(url="/docs")
 
     @app.get("/health")
     async def health() -> dict:
