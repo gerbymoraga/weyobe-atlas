@@ -6,7 +6,8 @@ export function LoginPage() {
   const { member, login, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: { pathname?: string } })?.from?.pathname ?? "/";
+  const from =
+    (location.state as { from?: { pathname?: string } })?.from?.pathname ?? "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -29,19 +30,17 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ink px-4 py-10">
+    <div className="auth-shell">
       <form
         onSubmit={(e) => void onSubmit(e)}
-        className="w-full max-w-lg border border-[var(--line)] bg-panel p-8 sm:p-10"
+        className="auth-card"
+        noValidate
       >
-        <p className="font-display text-3xl tracking-[0.12em] text-bone">ATLAS</p>
-        <p className="mt-1 font-ui text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-          Member portal
-        </p>
-        <label className="mt-8 block font-ui text-xs uppercase tracking-wider text-[var(--muted)]">
+        <p className="auth-brand">ATLAS</p>
+        <p className="auth-sub">Member portal</p>
+        <label className="auth-field">
           Email
           <input
-            className="mt-2 block w-full border border-[var(--line)] bg-ink px-3 py-3 text-base text-bone outline-none focus:border-brass"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -49,10 +48,9 @@ export function LoginPage() {
             autoComplete="email"
           />
         </label>
-        <label className="mt-4 block font-ui text-xs uppercase tracking-wider text-[var(--muted)]">
+        <label className="auth-field">
           Password
           <input
-            className="mt-2 block w-full border border-[var(--line)] bg-ink px-3 py-3 text-base text-bone outline-none focus:border-brass"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -60,19 +58,12 @@ export function LoginPage() {
             autoComplete="current-password"
           />
         </label>
-        {error ? <p className="mt-3 font-ui text-sm text-red-300">{error}</p> : null}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="mt-6 block w-full bg-brass px-4 py-3.5 font-ui text-sm uppercase tracking-[0.14em] text-ink disabled:opacity-60"
-        >
+        {error ? <p className="auth-error">{error}</p> : null}
+        <button type="submit" className="auth-submit" disabled={submitting}>
           {submitting ? "Signing in…" : "Sign in"}
         </button>
-        <p className="mt-4 text-center font-ui text-sm text-[var(--muted)]">
-          New here?{" "}
-          <Link to="/signup" className="text-brass hover:underline">
-            Create account
-          </Link>
+        <p className="auth-footer">
+          New here? <Link to="/signup">Create account</Link>
         </p>
       </form>
     </div>

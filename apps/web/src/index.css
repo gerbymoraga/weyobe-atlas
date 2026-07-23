@@ -35,9 +35,10 @@
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
+
+/* Do NOT set margin/padding on * — unlayered resets beat Tailwind @layer utilities
+   and collapse p-*, m-*, px-*, py-* (login/signup looked "shrunk"). */
 
 html,
 body,
@@ -717,5 +718,142 @@ textarea {
 
   .view {
     padding: 22px;
+  }
+}
+
+/* ----- auth (login / signup) ----- */
+.auth-shell {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  padding: 40px 16px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 32rem;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 40px 36px;
+}
+
+.auth-card .auth-brand {
+  font-family: var(--disp);
+  font-size: 2rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bone);
+  font-weight: 700;
+}
+
+.auth-card .auth-sub {
+  margin-top: 6px;
+  font-family: var(--ui);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.auth-card .auth-field {
+  display: block;
+  margin-top: 18px;
+  font-family: var(--ui);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+}
+
+.auth-card .auth-field:first-of-type {
+  margin-top: 32px;
+}
+
+.auth-card .auth-field input {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-2);
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--body);
+  font-size: 15px;
+  outline: none;
+}
+
+.auth-card .auth-field input:focus {
+  border-color: var(--brass);
+}
+
+.auth-card .auth-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.auth-card .auth-row .auth-field {
+  margin-top: 0;
+}
+
+.auth-card .auth-error {
+  margin-top: 14px;
+  font-family: var(--ui);
+  font-size: 14px;
+  color: #f0a8a8;
+}
+
+.auth-card .auth-submit {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px 22px;
+  border: 1px solid var(--brass);
+  background: var(--brass);
+  color: var(--ink);
+  font-family: var(--ui);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.auth-card .auth-submit:hover:not(:disabled) {
+  background: var(--brass-bright);
+  border-color: var(--brass-bright);
+}
+
+.auth-card .auth-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-card .auth-footer {
+  margin-top: 18px;
+  text-align: center;
+  font-family: var(--ui);
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.auth-card .auth-footer a {
+  color: var(--brass);
+}
+
+.auth-card .auth-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 520px) {
+  .auth-card {
+    padding: 28px 20px;
+  }
+
+  .auth-card .auth-row {
+    grid-template-columns: 1fr;
   }
 }
