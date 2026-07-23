@@ -9,18 +9,20 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 
-# Build
+# Build output only (source CSS/TS under apps/web/src is tracked)
 dist/
 build/
 *.egg
 .vite/
 apps/web/dev-dist/
 
-# Env & secrets
+# Env & secrets — keep examples + production API URL template
 .env
 .env.local
 .env.*.local
 !.env.example
+!**/.env.example
+!apps/web/.env.production
 
 # IDE / OS
 .idea/
@@ -39,3 +41,15 @@ htmlcov/
 *.sqlite3
 .turbo/
 .cache/
+
+# ---------------------------------------------------------------------------
+# Explicitly tracked (do not ignore)
+# ---------------------------------------------------------------------------
+!apps/web/src/
+!apps/web/src/**/*.css
+!apps/web/src/**/*.tsx
+!apps/web/src/**/*.ts
+!apps/web/public/
+!apps/web/public/**
+!deploy/
+!deploy/**
