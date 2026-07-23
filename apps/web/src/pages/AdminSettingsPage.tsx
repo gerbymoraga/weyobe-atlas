@@ -70,6 +70,8 @@ export function AdminSettingsPage() {
     rating: 4.5,
     discount_label: "",
     discount_url: "https://",
+    description: "",
+    how_to_redeem: "",
   });
   const [editingResourceId, setEditingResourceId] = useState<string | null>(null);
 
@@ -126,6 +128,8 @@ export function AdminSettingsPage() {
         rating: 4.5,
         discount_label: "",
         discount_url: "https://",
+        description: "",
+        how_to_redeem: "",
       });
       setResources(await adminApi.resources.list());
     } catch (err) {
@@ -491,6 +495,24 @@ export function AdminSettingsPage() {
                 setResourceForm({ ...resourceForm, discount_url: e.target.value })
               }
             />
+            <textarea
+              className="w-full border border-[var(--line)] bg-transparent px-3 py-2 font-ui text-sm"
+              placeholder="About / description"
+              rows={3}
+              value={resourceForm.description ?? ""}
+              onChange={(e) =>
+                setResourceForm({ ...resourceForm, description: e.target.value })
+              }
+            />
+            <textarea
+              className="w-full border border-[var(--line)] bg-transparent px-3 py-2 font-ui text-sm"
+              placeholder="How to redeem"
+              rows={3}
+              value={resourceForm.how_to_redeem ?? ""}
+              onChange={(e) =>
+                setResourceForm({ ...resourceForm, how_to_redeem: e.target.value })
+              }
+            />
             <div className="flex gap-2">
               <button
                 type="submit"
@@ -537,6 +559,8 @@ export function AdminSettingsPage() {
                           rating: r.rating,
                           discount_label: r.discount_label,
                           discount_url: r.discount_url,
+                          description: r.description ?? "",
+                          how_to_redeem: r.how_to_redeem ?? "",
                         });
                       }}
                     >

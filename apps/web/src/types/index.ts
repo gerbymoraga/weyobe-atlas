@@ -72,6 +72,9 @@ export interface Resource {
   category: string;
   rating?: number | null;
   discount_label?: string | null;
+  discount_url?: string | null;
+  description?: string;
+  how_to_redeem?: string;
 }
 
 export interface CoreCheckin {

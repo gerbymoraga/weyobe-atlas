@@ -23,6 +23,20 @@ async def list_resources(
     return [ResourceOut.model_validate(r) for r in result.scalars().all()]
 
 
+@router.get("/resources/{resource_id}", response_model=ResourceOut)
+async def get_resource(
+    resource_id: str,
+    member: Annotated[Member, Depends(get_current_member)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> ResourceOut:
+    _ = member
+    result = await db.execute(select(Resource).where(Resource.id == resource_id))
+    resource = result.scalar_one_or_none()
+    if resource is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Resource not found")
+    return ResourceOut.model_validate(resource)
+
+
 @router.get("/resources/{resource_id}/redirect")
 async def redirect_resource(
     resource_id: str,

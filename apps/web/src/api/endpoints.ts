@@ -61,6 +61,7 @@ export const kitApi = {
 
 export const libraryApi = {
   list: () => api<Resource[]>("/resources"),
+  get: (id: string) => api<Resource>(`/resources/${id}`),
   redirectUrl: (id: string) => `${API_URL}/resources/${id}/redirect`,
 };
 
@@ -113,6 +114,8 @@ export type AdminResource = {
   rating?: number | null;
   discount_label?: string | null;
   discount_url?: string | null;
+  description?: string;
+  how_to_redeem?: string;
 };
 
 export type AdminKit = {

@@ -93,6 +93,8 @@ class AdminResourceIn(BaseModel):
     rating: Optional[float] = None
     discount_label: Optional[str] = None
     discount_url: Optional[str] = None
+    description: str = ""
+    how_to_redeem: str = ""
 
 
 class AdminResourceOut(BaseModel):
@@ -102,6 +104,8 @@ class AdminResourceOut(BaseModel):
     rating: Optional[float] = None
     discount_label: Optional[str] = None
     discount_url: Optional[str] = None
+    description: str = ""
+    how_to_redeem: str = ""
 
     model_config = {"from_attributes": True}
 

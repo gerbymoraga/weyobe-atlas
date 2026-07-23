@@ -139,9 +139,15 @@ CREATE TABLE IF NOT EXISTS resources (
   rating          NUMERIC(3, 2),
   discount_label  TEXT,
   discount_url    TEXT,
+  description     TEXT NOT NULL DEFAULT '',
+  how_to_redeem   TEXT NOT NULL DEFAULT '',
   created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Existing DBs created before description columns
+ALTER TABLE resources ADD COLUMN IF NOT EXISTS description TEXT NOT NULL DEFAULT '';
+ALTER TABLE resources ADD COLUMN IF NOT EXISTS how_to_redeem TEXT NOT NULL DEFAULT '';
 
 CREATE INDEX IF NOT EXISTS idx_resources_category ON resources (category);
 

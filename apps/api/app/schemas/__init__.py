@@ -118,6 +118,9 @@ class ResourceOut(BaseModel):
     category: str
     rating: Optional[float] = None
     discount_label: Optional[str] = None
+    discount_url: Optional[str] = None
+    description: str = ""
+    how_to_redeem: str = ""
 
     model_config = {"from_attributes": True}
 

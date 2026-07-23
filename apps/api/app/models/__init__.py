@@ -177,6 +177,8 @@ class Resource(Base):
     rating: Mapped[Optional[float]] = mapped_column(Numeric(3, 2), nullable=True)
     discount_label: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     discount_url: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    how_to_redeem: Mapped[str] = mapped_column(Text, nullable=False, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
