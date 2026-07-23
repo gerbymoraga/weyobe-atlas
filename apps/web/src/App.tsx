@@ -8,6 +8,7 @@ import { CorePage } from "./pages/CorePage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ExpeditionsPage } from "./pages/ExpeditionsPage";
 import { KitPage } from "./pages/KitPage";
+import { LibraryDetailPage } from "./pages/LibraryDetailPage";
 import { LibraryPage } from "./pages/LibraryPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MembershipPage } from "./pages/MembershipPage";
@@ -26,6 +27,7 @@ export default function App() {
               <Route path="expeditions" element={<ExpeditionsPage />} />
               <Route path="kit" element={<KitPage />} />
               <Route path="library" element={<LibraryPage />} />
+              <Route path="library/:id" element={<LibraryDetailPage />} />
               <Route path="core" element={<CorePage />} />
               <Route path="membership" element={<MembershipPage />} />
               <Route

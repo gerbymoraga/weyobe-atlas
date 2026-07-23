@@ -94,7 +94,10 @@ export function AppShell() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
 
-  const title = titles[location.pathname] ?? "ATLAS";
+  const title = useMemo(() => {
+    if (location.pathname.startsWith("/library/")) return "Resource details";
+    return titles[location.pathname] ?? "ATLAS";
+  }, [location.pathname]);
   const navLinks = useMemo(
     () => links.filter((link) => !("adminOnly" in link && link.adminOnly) || member?.is_admin),
     [member?.is_admin],
