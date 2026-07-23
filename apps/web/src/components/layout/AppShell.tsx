@@ -66,6 +66,17 @@ const links = [
       </svg>
     ),
   },
+  {
+    to: "/admin",
+    label: "Admin Settings",
+    adminOnly: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9c.3.6.9 1 1.6 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z" />
+      </svg>
+    ),
+  },
 ];
 
 const titles: Record<string, string> = {
@@ -75,6 +86,7 @@ const titles: Record<string, string> = {
   "/library": "Resource Library",
   "/core": "CORE Check-In",
   "/membership": "Membership",
+  "/admin": "Admin Settings",
 };
 
 export function AppShell() {
@@ -83,6 +95,10 @@ export function AppShell() {
   const [open, setOpen] = useState(false);
 
   const title = titles[location.pathname] ?? "ATLAS";
+  const navLinks = useMemo(
+    () => links.filter((link) => !("adminOnly" in link && link.adminOnly) || member?.is_admin),
+    [member?.is_admin],
+  );
   const initials = useMemo(() => {
     const f = member?.first_name?.[0] ?? "";
     const l = member?.last_name?.[0] ?? "";
@@ -96,7 +112,7 @@ export function AppShell() {
           <span className="word">ATLAS</span>
         </div>
         <nav className="side-nav">
-          {links.map((link) => (
+          {navLinks.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
@@ -115,7 +131,9 @@ export function AppShell() {
             <div className="mn">
               {member?.first_name} {member?.last_name}
             </div>
-            <div className="mt">{member?.tier}</div>
+            <div className="mt">
+              {member?.is_admin ? "superadmin" : member?.tier}
+            </div>
           </div>
         </div>
         <button
@@ -164,7 +182,9 @@ export function AppShell() {
             <h1>{title}</h1>
           </div>
           <div className="topbar-right">
-            <span className="pill">{member?.tier}</span>
+            <span className="pill">
+              {member?.is_admin ? "superadmin" : member?.tier}
+            </span>
           </div>
         </div>
         <div className="view">

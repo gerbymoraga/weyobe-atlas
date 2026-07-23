@@ -1,7 +1,9 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AppShell } from "./components/layout/AppShell";
+import { RequireAdmin } from "./components/layout/RequireAdmin";
 import { RequireAuth } from "./components/layout/RequireAuth";
 import { AuthProvider } from "./contexts/AuthContext";
+import { AdminSettingsPage } from "./pages/AdminSettingsPage";
 import { CorePage } from "./pages/CorePage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ExpeditionsPage } from "./pages/ExpeditionsPage";
@@ -26,6 +28,14 @@ export default function App() {
               <Route path="library" element={<LibraryPage />} />
               <Route path="core" element={<CorePage />} />
               <Route path="membership" element={<MembershipPage />} />
+              <Route
+                path="admin"
+                element={
+                  <RequireAdmin>
+                    <AdminSettingsPage />
+                  </RequireAdmin>
+                }
+              />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
