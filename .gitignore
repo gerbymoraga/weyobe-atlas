@@ -53,3 +53,4 @@ htmlcov/
 !apps/web/public/**
 !deploy/
 !deploy/**
+apps/web/start_web.sh
