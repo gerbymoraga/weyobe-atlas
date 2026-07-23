@@ -19,8 +19,8 @@ API_PORT="${API_PORT:-8000}"
 API_LOG="${API_LOG:-/tmp/atlas-api.log}"
 WEB_LOG="${WEB_LOG:-/tmp/atlas-web-build.log}"
 
-# If you copy dist to a public dir (recommended), set this; leave empty to serve dist in-place
-PUBLIC_WEB_ROOT="${PUBLIC_WEB_ROOT:-}"
+# Nginx root is /var/www/atlas — always sync build there after npm run build
+PUBLIC_WEB_ROOT="${PUBLIC_WEB_ROOT:-/var/www/atlas}"
 
 MODE="${1:-all}"
 
