@@ -1,4 +1,13 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "/api";
+function resolveApiUrl(): string {
+  const fromEnv = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
+  // Never call localhost from a deployed browser — use same-origin nginx /api
+  if (!fromEnv || /localhost|127\.0\.0\.1/i.test(fromEnv)) {
+    return "/api";
+  }
+  return fromEnv.replace(/\/$/, "");
+}
+
+const API_URL = resolveApiUrl();
 
 export class ApiError extends Error {
   status: number;
@@ -42,3 +51,5 @@ export async function api<T>(
   if (res.status === 204) return undefined as T;
   return (await res.json()) as T;
 }
+
+export { API_URL };

@@ -1,4 +1,4 @@
-import { api } from "./client";
+import { api, API_URL } from "./client";
 import type {
   Booking,
   CoreCheckin,
@@ -61,8 +61,7 @@ export const kitApi = {
 
 export const libraryApi = {
   list: () => api<Resource[]>("/resources"),
-  redirectUrl: (id: string) =>
-    `${import.meta.env.VITE_API_URL ?? "/api"}/resources/${id}/redirect`,
+  redirectUrl: (id: string) => `${API_URL}/resources/${id}/redirect`,
 };
 
 export const coreApi = {

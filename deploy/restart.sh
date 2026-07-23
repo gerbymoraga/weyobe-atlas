@@ -70,11 +70,17 @@ restart_web() {
   fi
 
   npm ci >>"$WEB_LOG" 2>&1
-  npm run build >>"$WEB_LOG" 2>&1
+  # Force production API base (never bake localhost into the bundle)
+  VITE_API_URL=/api npm run build >>"$WEB_LOG" 2>&1
 
   if [[ ! -f "$WEB_DIR/dist/index.html" ]]; then
     echo "ERROR: build failed — no dist/index.html (see $WEB_LOG)"
     tail -n 40 "$WEB_LOG" || true
+    exit 1
+  fi
+
+  if grep -Rql 'localhost:8000' "$WEB_DIR/dist" 2>/dev/null; then
+    echo "ERROR: dist still contains localhost:8000 — fix .env and rebuild"
     exit 1
   fi
 
