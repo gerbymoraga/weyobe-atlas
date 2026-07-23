@@ -1,0 +1,69 @@
+# Deploy ATLAS to DigitalOcean when main is updated.
+#
+# Required GitHub repo secrets (Settings → Secrets and variables → Actions):
+#   DROPLET_HOST     — e.g. 167.172.135.40
+#   DROPLET_USER     — e.g. deploy
+#   DROPLET_SSH_KEY  — private key for that user (full PEM)
+#   DROPLET_PATH     — absolute path to the clone, e.g. /home/deploy/apps/weyobe-atlas
+#
+# Optional:
+#   DROPLET_PORT     — SSH port (default 22)
+#
+# One-time server + secrets setup: see deploy/SETUP_CICD.md
+
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          port: ${{ secrets.DROPLET_PORT || 22 }}
+          script_stop: true
+          command_timeout: 20m
+          script: |
+            set -euo pipefail
+            APP_DIR="${{ secrets.DROPLET_PATH }}"
+            if [ -z "$APP_DIR" ]; then
+              echo "ERROR: DROPLET_PATH secret is empty"
+              exit 1
+            fi
+            cd "$APP_DIR"
+            chmod +x deploy/remote-deploy.sh deploy/restart.sh deploy/start-api.sh
+            ./deploy/remote-deploy.sh
+
+      - name: Health check
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          port: ${{ secrets.DROPLET_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            curl -sf "http://127.0.0.1:8000/health" >/dev/null
+            echo "API health OK"
+            if [ -f /var/www/atlas/index.html ]; then
+              echo "Web root OK (/var/www/atlas)"
+            else
+              echo "ERROR: missing /var/www/atlas/index.html"
+              exit 1
+            fi
